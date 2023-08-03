@@ -22,7 +22,7 @@ Node.js and npm (Node Package Manager)
 Setup : 
 Clone the repository to your local machine:
 
-git clone https://github.com/your-username/customer-management-app.git
+git clone https://github.com/Basavarajkd/Sunbasedata.git
 cd customer-management-app
 
 Set up the MySQL database:
@@ -64,9 +64,9 @@ POST /customers/{customerId}/delete: Deletes a specific customer.
 
 POST /customers/{customerId}/update: Updates a specific customer's details.
 
-Contributing
+Contributing :
 Contributions to the Customer Management Application are welcome! If you find any issues or want to add new features, feel free to submit a pull request.
 
-Acknowledgments
+Acknowledgments :
 This application is built using the Spring Boot framework and the Thymeleaf template engine.
 Special thanks to SunBase Data for providing the API endpoints used in this application.
