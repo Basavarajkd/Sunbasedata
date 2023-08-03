@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer List</title>
+</head>
+<body>
+<h2>Customer List</h2>
+<table>
+    <thead>
+    <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody id="customerList">
+    <!-- Customer data will be dynamically added here -->
+    </tbody>
+</table>
+
+<script>
+        // Function to handle editing a customer
+        function editCustomer(uuid) {
+            // You can implement the code to navigate to the customer edit screen
+            // Pass the 'uuid' parameter to the edit screen for further processing
+        }
+
+        // Function to handle deleting a customer
+        function deleteCustomer(uuid) {
+            const authToken = localStorage.getItem('bearerToken');
+            const apiUrl = `https://qa2.sunbasedata.com/sunbase/portal/api/assignment.jsp?cmd=delete&uuid=${uuid}`;
+
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Authorization': authToken
+                }
+            })
+            .then(response => {
+                if (response.status === 200) {
+                    alert('Customer deleted successfully.');
+                    // Remove the customer row from the table
+                    const tableRow = document.getElementById(uuid);
+                    if (tableRow) {
+                        tableRow.remove();
+                    }
+                } else if (response.status === 400) {
+                    throw new Error('UUID not found.');
+                } else {
+                    throw new Error('Failed to delete customer.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(error.message);
+            });
+        }
+
+        // Function to populate the table with customer data
+        function populateCustomerList(data) {
+            const tableBody = document.getElementById('customerList');
+            tableBody.innerHTML = '';
+
+            data.forEach(customer => {
+                const row = document.createElement('tr');
+                row.id = customer.uuid;
+                row.innerHTML = `
+                    <td>${customer.first_name}</td>
+                    <td>${customer.last_name}</td>
+                    <td>${customer.email}</td>
+                    <td>${customer.phone}</td>
+                    <td>
+                        <button onclick="editCustomer('${customer.uuid}')">Edit</button>
+                        <button onclick="deleteCustomer('${customer.uuid}')">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+       document.addEventListener('DOMContentLoaded', () => {
+        const authToken = localStorage.getItem('bearerToken');
+        const apiUrl = 'https://qa2.sunbasedata.com/sunbase/portal/api/assignment.jsp?cmd=get_customer_list';
+
+        fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'Authorization': authToken
+            }
+        })
+        .then(response => {
+            if (response.status === 200) {
+                return response.json();
+            } else if (response.status === 401) {
+                throw new Error('Invalid Authorization. Please login again.');
+            } else {
+                throw new Error('Failed to fetch customer list.');
+            }
+        })
+        .then(data => {
+            populateCustomerList(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert(error.message); // Display the error message
+        });
+    });
+</script>
+</body>
+</html>
